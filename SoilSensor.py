@@ -1,21 +1,17 @@
-#!/usr/bin/python
-import RPi.GPIO as GPIO
-import time
-
-#GPIO SETUP
-channel = 21
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(channel, GPIO.IN)
-
-def callback(channel):
-    if GPIO.input(channel):
-        print "Water Detected!"
-    else:
-        print "Water Detected!"
-
-GPIO.add_event_detect(channel, GPIO.BOTH, bouncetime=300)  # let us know when the pin goes HIGH or LOW
-GPIO.add_event_callback(channel, callback)  # assign function to GPIO PIN, Run function on change
-
-# infinite loop
-while True:
-    time.sleep(1)
+ import PCF8591 as ADC  # Import the library for the PCF8591 module
+ import time  # Import the time library for adding delays
+ # Initialize the PCF8591 module at I2C address 0x48.
+ # This address is used for communication with the Raspberry Pi.
+ ADC.setup(0x48)
+ try:
+    while True:  # Start an infinite loop to continuously monitor the sensor.
+        # Read the analog value from the potentiometer connected to AIN0.
+        # Channel range from 0 to 3 represents AIN0 to AIN3.
+        # The potentiometer's rotation alters the voltage, which is read by the PCF8591.
+        potentiometer_value = ADC.read(0)
+        print(potentiometer_value)
+        # Add a short delay of 0.2 seconds to make the loop more manageable.
+        time.sleep(0.2)
+ except KeyboardInterrupt:
+    # If a KeyboardInterrupt (CTRL+C) is detected, exit the loop and end the program.
+    print("Exit")
